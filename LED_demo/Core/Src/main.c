@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,7 +66,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  char A[20];
+  char bootMsg[] = "System Booting...\r\n";
+  strcpy(A,"hello world\r\n");
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -90,17 +92,26 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_UART_Transmit(&huart1, (uint8_t *)bootMsg, strlen(bootMsg), 1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  while (1) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1)==GPIO_PIN_RESET) {
+      HAL_Delay(20);
+      if (HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1)==GPIO_PIN_RESET) {
+        HAL_UART_Transmit(&huart1, (uint8_t *)A, strlen(A), 1000);
+
+        while (HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1)==GPIO_PIN_RESET);
+      }
+    }
   }
   /* USER CODE END 3 */
+
 }
 
 /**
